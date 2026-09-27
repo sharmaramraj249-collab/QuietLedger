@@ -8,14 +8,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     environment: Literal["development", "test", "production"] = Field(
-        default_factory=lambda: "production" if os.getenv("VERCEL_ENV") == "production" else "development"
+        default_factory=lambda: "production" if os.getenv("RENDER") == "true" else "development"
     )
     database_url: str = "sqlite+aiosqlite:///./quiet_ledger.db"
     database_url_unpooled: str | None = None
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-3.8-flash"
     cors_origins: str = "http://localhost:5173"
-    release_id: str = "local"
+    release_id: str = Field(default_factory=lambda: os.getenv("RENDER_GIT_COMMIT", "local"))
 
     @model_validator(mode="after")
     def validate_production_settings(self) -> "Settings":

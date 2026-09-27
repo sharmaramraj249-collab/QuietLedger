@@ -10,4 +10,5 @@ __pycache__/
 backend/*.db
 backend/*.sqlite3
 .superdesign/tmp/
+.vite/
 

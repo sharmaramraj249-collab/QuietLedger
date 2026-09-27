@@ -12,7 +12,7 @@ Traditional feedback tooling centralizes the identity trail that makes honest pa
 
 ## Architecture
 
-React/Vite renders the worker flow and keeps credential material in browser local storage. The 1AM-preferred DApp Connector integration discovers UUID-keyed providers from `window.midnight`, resets the session on network change, and calls the generated Compact client only when a real deployed contract is configured. FastAPI stores public receipt metadata and public policy hashes only. Gemini receives sanitized public policy text and produces structured explanations with a deterministic fallback. See [architecture](docs/ARCHITECTURE.md).
+React/Vite renders the worker flow and keeps temporary credential material in browser session storage. The 1AM-preferred DApp Connector integration discovers UUID-keyed providers from `window.midnight`, resets the session on network change, and calls the generated Compact client only when a real deployed contract is configured. FastAPI stores public receipt metadata and public policy hashes only. Gemini receives sanitized public policy text and produces structured explanations with a deterministic fallback. See [architecture](docs/ARCHITECTURE.md).
 
 ## Stack
 
@@ -20,7 +20,7 @@ React/Vite renders the worker flow and keeps credential material in browser loca
 - Midnight DApp Connector API v4.0.1, Midnight.js v4.1.1, Compact language 0.23/toolchain 0.31.1
 - FastAPI, SQLAlchemy async, Alembic, Pydantic, asyncpg and Neon/Lakebase Postgres
 - Official Google GenAI Python SDK with Pydantic structured output
-- GitHub Actions, Vercel Functions, and a production guardrail for Neon/Lakebase Postgres
+- GitHub Actions, Netlify frontend hosting, Render Docker hosting, and Neon/Lakebase Postgres
 
 ## Local setup
 
@@ -31,7 +31,7 @@ cp .env.example .env
 npm ci
 npm run dev
 uv sync --project backend --all-groups
-uv run --project backend uvicorn app.main:app --reload --port 8000
+uv run --directory backend uvicorn app.main:app --reload --port 8000
 ```
 
 For development SQLite is automatic. For Neon, set `DATABASE_URL` to the pooled URL for API traffic and `DATABASE_URL_UNPOOLED` to the direct URL for Alembic. Link a Neon project, create `production` and `development` branches, run migrations against development, then promote after review. Do not commit either URL.
@@ -74,13 +74,13 @@ uv run --directory backend pytest
 
 ## CI/CD
 
-`.github/workflows/ci.yml` runs linting, frontend tests/build, backend lint/tests, Compact compilation and generated-artifact validation on every push and pull request. Vercel’s Git integration should deploy successful `main` builds; no deployment is claimed until the Vercel project is connected and reports a production deployment.
+`.github/workflows/ci.yml` runs linting, frontend tests/build, backend lint/tests, Compact compilation and generated-artifact validation on every push and pull request. Connect Netlify and Render to the verified Git branch only after CI is green; no live deployment is claimed until both platforms report a successful production deploy.
 
-## Vercel deployment
+## Netlify and Render deployment
 
-Both the Vite application and FastAPI service are arranged for one Vercel project: `api/index.py` exposes FastAPI as a Python serverless function, while `vercel.json` builds the frontend and keeps `/guide` and `/privacy` as client-routed pages. Import the repository into Vercel, set the root directory to this repository, and add `APP_ENV=production`, `RELEASE_ID` (the deployed Git SHA), `DATABASE_URL`, `GEMINI_API_KEY`, `GEMINI_MODEL`, and `CORS_ORIGINS` in Vercel’s environment settings. Set `VITE_API_BASE_URL` only if frontend and API use different origins; otherwise it uses same-origin `/api` automatically.
+Netlify builds the Vite application from `netlify.toml` and publishes `dist`. Set `VITE_API_BASE_URL` to the public Render service origin before building. The SPA rewrite keeps `/guide` and `/privacy` available on direct navigation.
 
-Vercel’s serverless filesystem is ephemeral, so production requires Neon; SQLite is only a local fallback. The API will refuse to start in production if it receives SQLite or wildcard CORS. Use the production branch’s pooled URL in `DATABASE_URL`, and run Alembic separately with the direct URL before release. Add the Vercel production domain to `CORS_ORIGINS` only when a cross-origin client actually needs it; same-origin API calls do not need browser CORS.
+Render builds `Dockerfile.backend` through `render.yaml`. The container runs Alembic before starting FastAPI, serves on Render's assigned port, and verifies `/health`. Configure the pooled Neon URL as `DATABASE_URL`, the direct Neon URL as `DATABASE_URL_UNPOOLED`, and the exact Netlify origin as `CORS_ORIGINS`. Production refuses SQLite and wildcard CORS. See the complete [deployment guide](docs/DEPLOYMENT.md).
 
 ## Repository structure
 
@@ -89,7 +89,7 @@ contracts/   Compact source and generated deployment artifacts
 src/         Responsive React worker experience and wallet boundary
 backend/     FastAPI, async public-metadata store, Gemini safety service
 docs/        Proposal, architecture, privacy model and demo script
-.github/     CI and Pages deployment
+.github/     Continuous verification workflow
 ```
 
 ## Screenshots
@@ -98,7 +98,7 @@ Add real screenshots from a configured local run to `docs/assets/` before submis
 
 ## Live demo
 
-Not deployed. After configuring GitHub Pages, a backend host, Neon, a deployed contract and the appropriate wallet network, add the verified URL here.
+Not deployed. After Netlify, Render, Neon, the deployed contract, and the appropriate wallet network are configured, add the verified production URL here.
 
 ## Known limitations
 

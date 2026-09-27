@@ -1,7 +1,7 @@
 export interface PolicyPlan { headline: string; explanation: string; disclosures: string[]; }
 export interface PublicMetrics { finalized_receipts: number; unique_windows: number; }
 export interface ServiceStatus { status: "ok"; storage: string; release: string; }
-export const apiBase = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? "http://localhost:8000" : "");
+export const apiBase = (import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? "http://localhost:8000" : "")).replace(/\/$/, "");
 const timeoutMs = 8_000;
 
 export class PublicApiError extends Error {
@@ -9,6 +9,7 @@ export class PublicApiError extends Error {
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  if (!apiBase) throw new PublicApiError("This deployment is missing its Render API URL. No private data was sent.");
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
   try {

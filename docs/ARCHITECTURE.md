@@ -8,8 +8,8 @@ React + local credential  ── private witness ──> 1AM proving provider
          │       │                                      │               │
          │       └──> Neon/Lakebase Postgres <── public receipts ────────┘
          ▼
-browser localStorage (never server storage)
+browser sessionStorage (never server storage)
 ```
 
-Normal API traffic uses `DATABASE_URL` (Neon pooled URL). Alembic migrations use `DATABASE_URL_UNPOOLED` (direct URL). Development falls back to async SQLite. Create a Neon production branch and a `development` branch; run and validate migrations on development before promotion.
+Netlify serves the Vite SPA and calls the FastAPI service on Render through the explicit `VITE_API_BASE_URL`. Normal API traffic uses `DATABASE_URL` (Neon pooled URL). Render's pre-deploy migration uses `DATABASE_URL_UNPOOLED` (direct URL). Development falls back to async SQLite. Create a Neon production branch and a `development` branch; run and validate migrations on development before promotion.
 

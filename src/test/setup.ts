@@ -1,3 +1,6 @@
 import { afterEach } from "vitest";
-afterEach(() => localStorage.clear());
+afterEach(() => {
+  localStorage.clear();
+  sessionStorage.clear();
+});
 

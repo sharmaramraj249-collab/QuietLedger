@@ -17,3 +17,11 @@ def test_production_rejects_wildcard_cors():
 def test_origin_list_is_trimmed():
     settings = Settings(cors_origins=" http://localhost:5173/ , https://app.example.com ")
     assert settings.allowed_origins == ["http://localhost:5173", "https://app.example.com"]
+
+
+def test_render_runtime_defaults_to_production(monkeypatch):
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("RENDER_GIT_COMMIT", "release-sha")
+    settings = Settings(database_url="postgresql+asyncpg://example", _env_file=None)
+    assert settings.environment == "production"
+    assert settings.release_id == "release-sha"
