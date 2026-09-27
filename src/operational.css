@@ -1,0 +1,10 @@
+.status-dot.offline { background: #c6452d; }
+
+.metrics div i {
+  width: 5px;
+  height: 5px;
+  background: #3f5b4b;
+  border-radius: 50%;
+  grid-row: 1;
+  grid-column: 1;
+}
