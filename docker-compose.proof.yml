@@ -1,0 +1,7 @@
+services:
+  proof-server:
+    image: midnightntwrk/proof-server:latest
+    ports:
+      - "6300:6300"
+    restart: unless-stopped
+
