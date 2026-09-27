@@ -1,0 +1,42 @@
+{
+  "name": "quiet-ledger",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "contract:check": "node scripts/check-contract.mjs",
+    "contract:compile": "node scripts/compile-contract.mjs",
+    "contract:artifacts:check": "node scripts/check-contract.mjs --artifacts"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/dapp-connector-api": "4.0.1",
+    "@midnight-ntwrk/midnight-js-contracts": "4.1.1",
+    "@midnight-ntwrk/midnight-js-network-id": "4.1.1",
+    "framer-motion": "12.43.0",
+    "lucide-react": "0.468.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.34.0",
+    "@types/node": "22.18.0",
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
+    "@vitejs/plugin-react": "5.0.2",
+    "eslint": "9.34.0",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "eslint-plugin-react-refresh": "0.4.20",
+    "globals": "16.3.0",
+    "jsdom": "26.1.0",
+    "typescript": "5.9.2",
+    "typescript-eslint": "8.41.0",
+    "vite": "7.1.3",
+    "vitest": "3.2.4"
+  }
+}
