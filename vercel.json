@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/**/*.py": {
+      "maxDuration": 20,
+      "excludeFiles": "{backend/tests/**,docs/**,contracts/**,node_modules/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/guide", "destination": "/index.html" },
+    { "source": "/privacy", "destination": "/index.html" }
+  ]
+}
