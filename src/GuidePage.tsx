@@ -1,0 +1,11 @@
+import { ArrowLeft, EyeOff, ShieldCheck } from "lucide-react";
+
+const content = {
+  "/guide": { label: "Field guide", title: "A slower route to a safer signal.", intro: "Quiet Ledger separates the question an organization may ask from the personal material it never needs to see.", steps: [["01", "Read the public window", "You can see the exact rule before you connect anything."], ["02", "Keep the proof local", "A credential commitment and nullifier secret stay in your browser and wallet proving flow."], ["03", "Review the small disclosure", "The ledger receives only the public window, validity outcome and aggregate signal count."], ["04", "Keep a real receipt", "A receipt appears only after the wallet returns a genuine transaction identifier."]] },
+  "/privacy": { label: "Privacy notes", title: "Privacy is the product, not a setting.", intro: "The contract and the service have deliberately different jobs: the first proves a narrow condition; the second stores only public metadata.", steps: [["LOCAL", "Private witnesses", "Identity, credential material, worker secret and raw response do not leave the device."], ["LEDGER", "Scoped uniqueness", "A one-way, window-specific nullifier blocks duplicate signals without publishing a worker profile."], ["API", "Public metadata only", "FastAPI rejects private-field labels in receipts and saves only finalized transaction metadata."], ["GEMINI", "Public policy only", "The assistant receives a redacted public requirement and returns structured explanatory language."]] },
+} as const;
+
+export default function GuidePage({ path }: { path: "/guide" | "/privacy" }) {
+  const page = content[path];
+  return <main className="guide-page"><header className="guide-top"><a href="/" className="back"><ArrowLeft size={16} /> Quiet Ledger</a><span>{page.label}</span></header><section className="guide-hero"><p className="eyebrow">Worker field notes</p><h1>{page.title}</h1><p>{page.intro}</p></section><section className="guide-steps">{page.steps.map(([number, title, detail], index) => <article key={number}><span>{number}</span><div>{index % 2 ? <EyeOff size={20} /> : <ShieldCheck size={20} />}<h2>{title}</h2><p>{detail}</p></div></article>)}</section><footer><a href="/">Return to the listening desk →</a></footer></main>;
+}
