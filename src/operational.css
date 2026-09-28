@@ -81,6 +81,13 @@
   flex: 0 0 auto;
 }
 
+.proof-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
 a.icon-button { text-decoration: none; }
 
 .receipt-body { width: 100%; }

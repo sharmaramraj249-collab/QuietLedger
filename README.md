@@ -12,7 +12,7 @@ Traditional feedback tooling centralizes the identity trail that makes honest pa
 
 ## Architecture
 
-React/Vite renders the worker flow and keeps temporary credential material in browser session storage. The 1AM-preferred DApp Connector integration discovers UUID-keyed providers from `window.midnight`, resets the session on network change, and calls the generated Compact client only when a real deployed contract is configured. FastAPI stores public receipt metadata and public policy hashes only. Gemini receives sanitized public policy text and produces structured explanations with a deterministic fallback. See [architecture](docs/ARCHITECTURE.md).
+React/Vite renders the worker flow and keeps temporary credential material in browser session storage. The 1AM-preferred DApp Connector integration discovers UUID-keyed providers from `window.midnight`, resets the session on network change, and lets each worker deploy a personal Compact contract before submitting a signal. FastAPI stores public receipt metadata and public policy hashes only. Gemini receives sanitized public policy text and produces structured explanations with a deterministic fallback. See [architecture](docs/ARCHITECTURE.md).
 
 ## Stack
 
@@ -78,7 +78,7 @@ uv run --directory backend pytest
 
 ## Netlify and Render deployment
 
-Netlify builds the Vite application from `netlify.toml` and publishes `dist`. Set `VITE_API_BASE_URL` to the public Render service origin before building. Preview and Preprod contract addresses live in the public `public/quiet-ledger.config.json` registry, so one consumer deployment supports both networks without treating public addresses as secrets. The SPA rewrite keeps `/guide` and `/privacy` available on direct navigation.
+Netlify builds the Vite application from `netlify.toml` and publishes `dist`. Set `VITE_API_BASE_URL` to the public Render service origin before building. The Netlify build pins Compact toolchain 0.31.1, compiles the contract, and publishes the generated browser artifacts. One frontend supports both Preview and Preprod; each connected worker creates their own network-specific contract through 1AM. The SPA rewrite keeps `/guide` and `/privacy` available on direct navigation.
 
 Render builds `Dockerfile.backend` on the free web-service plan declared in `render.yaml`. The container runs Alembic before starting FastAPI, serves on Render's assigned port, and verifies `/health`. Configure the pooled Neon URL as `DATABASE_URL`, the direct Neon URL as `DATABASE_URL_UNPOOLED`, and the exact Netlify origin as `CORS_ORIGINS`. Production refuses SQLite and wildcard CORS. See the complete [deployment guide](docs/DEPLOYMENT.md).
 

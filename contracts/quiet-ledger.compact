@@ -2,23 +2,29 @@ pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
-// Quiet Ledger never receives an identity or raw worker response. An issuer publishes
-// commitments for eligible workers; the worker supplies the matching commitment locally.
+// Each worker deploys one personal listening-window contract through their wallet.
+// The deployment registers only their local credential commitment, never their identity
+// or raw workplace response.
 export ledger eligibleCommitments: Set<Bytes<32>>;
 export ledger usedNullifiers: Set<Bytes<32>>;
 export ledger activeWindow: Uint<64>;
 export ledger signalCount: Counter;
-export ledger authority: Bytes<32>;
 
-constructor(window: Uint<64>, adminKey: Bytes<32>) {
-  activeWindow = disclose(window);
-  authority = disclose(adminKey);
-}
-
-witness credentialCommitment(): Bytes<32>;
 witness nullifierSecret(): Bytes<32>;
 
-circuit nullifierFor(window: Uint<64>, secret: Bytes<32>): Bytes<32> {
+pure circuit credentialFor(secret: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>(
+    [pad(32, "quiet-ledger:credential"), secret]);
+}
+
+constructor(window: Uint<64>) {
+  activeWindow = disclose(window);
+  // DELIBERATE DISCLOSURE: a one-way credential commitment initializes only
+  // this personal contract. The credential secret remains browser-local.
+  eligibleCommitments.insert(disclose(credentialFor(nullifierSecret())));
+}
+
+pure circuit nullifierFor(window: Uint<64>, secret: Bytes<32>): Bytes<32> {
   return persistentHash<Vector<3, Bytes<32>>>(
     [pad(32, "quiet-ledger:signal:nullifier"), window as Bytes<32>, secret]);
 }
@@ -27,18 +33,11 @@ circuit nullifierFor(window: Uint<64>, secret: Bytes<32>): Bytes<32> {
 // The witness commitment proves the worker belongs to the published eligibility set.
 export circuit submitSignal(window: Uint<64>): [] {
   assert(window == activeWindow, "Listening window is not active");
-  assert(eligibleCommitments.member(credentialCommitment()), "Credential is not eligible");
+  assert(eligibleCommitments.member(credentialFor(nullifierSecret())), "Credential is not eligible");
   const nullifier = nullifierFor(window, nullifierSecret());
   assert(!usedNullifiers.member(nullifier), "A signal already exists for this window");
   // DELIBERATE DISCLOSURE: only a window-scoped one-way nullifier is stored publicly.
   // It prevents replay without revealing the credential, secret, worker, or response.
   usedNullifiers.insert(disclose(nullifier));
   signalCount.increment(1);
-}
-
-// Authority-only rollover keeps the public window finite and resets linkability scope.
-export circuit rotateWindow(nextWindow: Uint<64>, adminKey: Bytes<32>): [] {
-  assert(adminKey == authority, "Only the listening authority can rotate a window");
-  assert(nextWindow > activeWindow, "Window must move forward");
-  activeWindow = disclose(nextWindow);
 }

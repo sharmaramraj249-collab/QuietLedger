@@ -1,16 +1,17 @@
 # Quiet Ledger Compact contract
 
-`quiet-ledger.compact` has public eligibility commitments, a public active window,
-a public replay-prevention set, and a public aggregate signal counter. Its private
-witnesses are a worker-held eligibility commitment and the worker-held nullifier
-secret. The raw response and worker identity are not contract inputs.
+`quiet-ledger.compact` is deployed once per worker and listening window through
+their connected wallet. It has a public credential commitment, a public active
+window, a public replay-prevention set, and a public signal counter. Its private
+witnesses are the worker-held credential commitment and nullifier secret. The raw
+response and worker identity are not contract inputs.
 
-`submitSignal` deliberately discloses only a window-scoped nullifier so the ledger
-can reject a second signal. The value is a one-way, window-specific hash—not a
-credential or identity. `rotateWindow` deliberately discloses the new public
-period label. These are the only `disclose()` uses.
+The constructor deliberately discloses a one-way credential commitment into the
+worker's personal instance. `submitSignal` discloses only a window-scoped nullifier
+so that instance can reject a second signal. Neither value is a credential secret
+or identity.
 
 Compile with Compact toolchain 0.31.1 (language 0.23, the current public-network-compatible toolchain): `npm run contract:compile`.
 This emits JavaScript typings/client code, ZKIR per exported circuit, and proving
-keys to `contracts/managed/`. Treat those generated artifacts as deployment
-artifacts and commit them only after compiling with the exact compiler release.
+keys to `contracts/managed/`. Netlify compiles these artifacts during its Linux
+build because the Compact compiler is not available natively on Windows.
