@@ -10,6 +10,10 @@ Quiet Ledger is a worker-first privacy DApp for time-bounded workplace listening
 
 [Open the live Quiet Ledger website](https://quietledger2.netlify.app/)
 
+## Demo Video URL
+
+[Watch the Quiet Ledger demo video](https://drive.google.com/file/d/1-wiND1avJ1Sg6gV89jT2I-emVvc3tnLC/view?usp=sharing)
+
 ## Preprod
 
 ### Deployed Contract Address
