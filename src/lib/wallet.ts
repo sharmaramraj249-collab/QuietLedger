@@ -14,6 +14,7 @@ export const connectWallet = async (network: Network): Promise<{ provider: Walle
   const api = await provider.connect(network);
   const status = await api.getConnectionStatus();
   if (status.status !== "connected") throw new Error("Wallet disconnected before authorization completed.");
+  if (status.networkId !== network) throw new Error(`Wallet connected to ${status.networkId}, but ${network} was requested. Switch networks in 1AM and reconnect.`);
   const address = api.getUnshieldedAddress ? (await api.getUnshieldedAddress()).unshieldedAddress : undefined;
   const dust = api.getDustBalance ? (await api.getDustBalance()).balance : undefined;
   return { provider, api, address, dust };

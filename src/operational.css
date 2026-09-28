@@ -8,3 +8,106 @@
   grid-row: 1;
   grid-column: 1;
 }
+
+.connection-ledger {
+  max-width: 550px;
+  margin: -3px 0 22px;
+  border-bottom: 1px solid #cfc8ba;
+}
+
+.connection-ledger > div {
+  display: grid;
+  grid-template-columns: 145px minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  border-top: 1px solid #ded8cc;
+}
+
+.connection-ledger span,
+.receipt dt,
+.receipt-heading span {
+  font: 9px "IBM Plex Mono", monospace;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #6d746d;
+}
+
+.receipt.discarded { border-color: #c99a8f; }
+.receipt.discarded > svg,
+.receipt.discarded .receipt-heading span { color: #c6452d; }
+.receipt.discarded .receipt-heading span { border-color: #c99a8f; }
+
+.connection-ledger code,
+.connection-ledger em {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 10px "IBM Plex Mono", monospace;
+}
+
+.connection-ledger em {
+  color: #8a8f8a;
+  font-style: normal;
+}
+
+.icon-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #cfc8ba;
+  background: transparent;
+  color: #18231f;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+a.icon-button { text-decoration: none; }
+
+.receipt-body { width: 100%; }
+
+.receipt-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.receipt-heading span {
+  color: #3f5b4b;
+  border: 1px solid #93a297;
+  padding: 3px 6px;
+}
+
+.receipt dl { margin: 7px 0; }
+
+.receipt dl > div {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid #ded8cc;
+}
+
+.receipt dd {
+  min-width: 0;
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.receipt dd code {
+  min-width: 0;
+  flex: 1;
+  line-height: 1.45;
+}
+
+@media (max-width: 580px) {
+  .connection-ledger > div { grid-template-columns: 1fr 30px; padding: 10px 0; }
+  .connection-ledger span { grid-column: 1 / -1; }
+  .receipt dl > div { grid-template-columns: 1fr; gap: 6px; }
+}

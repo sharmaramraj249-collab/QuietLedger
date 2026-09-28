@@ -10,11 +10,21 @@ export interface WalletProvider {
 }
 
 export interface ConnectedWallet {
-  getConnectionStatus(): Promise<{ status: "connected" | "disconnected"; networkId: string }>;
+  getConnectionStatus(): Promise<{ status: "connected"; networkId: string } | { status: "disconnected" }>;
   getUnshieldedAddress?: () => Promise<{ unshieldedAddress: string }>;
   getDustBalance?: () => Promise<{ balance: bigint; cap: bigint }>;
+  getTxHistory?: (pageNumber: number, pageSize: number) => Promise<WalletHistoryEntry[]>;
   getProvingProvider?: (keyMaterialProvider?: unknown) => Promise<unknown>;
-  submitTransaction?: (transaction: unknown) => Promise<{ transactionId?: string } | string>;
+  submitTransaction?: (transaction: string) => Promise<void | string | { transactionId?: string; txHash?: string }>;
+}
+
+export type WalletTransactionStatus =
+  | { status: "pending" | "discarded" }
+  | { status: "confirmed" | "finalized"; executionStatus?: Record<number, "Success" | "Failure"> };
+
+export interface WalletHistoryEntry {
+  txHash: string;
+  txStatus: WalletTransactionStatus;
 }
 
 declare global {

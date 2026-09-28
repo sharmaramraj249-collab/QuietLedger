@@ -28,11 +28,22 @@ Import the same repository into Netlify. `netlify.toml` sets the build command t
 Set these build environment variables in Netlify:
 
 - `VITE_API_BASE_URL`: the Render origin, with no trailing slash.
-- `VITE_MIDNIGHT_NETWORK`: `preview` or `preprod`.
-- `VITE_CONTRACT_ADDRESS`: the verified deployed Midnight contract address.
-- `VITE_CONTRACT_ARTIFACT_URL`: the public path or URL for the generated Compact client artifact.
 
-Every `VITE_*` value is embedded in the browser bundle. Never place database credentials, Gemini keys, wallet secrets, or private witness material in a `VITE_*` variable.
+The frontend supports both Midnight Preview and Preprod in the same deployment. Contract addresses are public routing data, not secrets, so they do not belong in Netlify environment variables. After deploying the Compact contract on each network, edit `public/quiet-ledger.config.json`:
+
+```json
+{
+  "contractArtifactUrl": "/contracts/quiet-ledger/contract/index.js",
+  "networks": {
+    "preview": { "contractAddress": "<preview address>", "transactionExplorerUrl": "" },
+    "preprod": { "contractAddress": "<preprod address>", "transactionExplorerUrl": "" }
+  }
+}
+```
+
+Keep an address blank until that network is actually deployed; the app will identify it as unavailable instead of submitting to the wrong chain. `transactionExplorerUrl` is optional and can contain a `{txHash}` placeholder. Compile with `npm run contract:compile` and commit the generated `contracts/managed` deployment artifacts before connecting Netlify. The Vite production build publishes them under the configured public artifact path and fails if an address is configured but the generated client is missing.
+
+Only `VITE_API_BASE_URL` is embedded in the browser bundle. Never place database credentials, Gemini keys, wallet secrets, or private witness material in a `VITE_*` variable.
 
 ## 4. Close the CORS loop
 
@@ -43,7 +54,8 @@ After Netlify assigns the final production URL, confirm that Render's `CORS_ORIG
 - Confirm `GET <render-url>/health` returns `status: ok` and the expected release identifier.
 - Confirm `GET <render-url>/api/v1/metrics` succeeds from the Netlify site without a CORS error.
 - Open `/guide` and `/privacy` directly on Netlify to verify the SPA rewrite.
-- Complete the connected-wallet journey and verify that a receipt appears only after the wallet returns a real transaction identifier.
+- Test both Preview and Preprod: changing network must disconnect the current wallet session and require a fresh 1AM authorization.
+- Complete the connected-wallet journey and verify that the UI shows the connected wallet address, the selected network's contract address, and a transaction hash found in 1AM transaction history.
 - Confirm Render logs and any analytics exclude API request bodies on worker routes.
 
 ## Operational rules
