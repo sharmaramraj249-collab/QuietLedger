@@ -4,7 +4,49 @@
 
 Quiet Ledger is a worker-first privacy DApp for time-bounded workplace listening. A worker proves that they are eligible and have not already participated in the current window, without publishing an identity, credential, wallet address, raw note, or private response.
 
-> **Status:** submission-ready codebase; deployment, contract artifact generation, and a live demo require the external credentials/services listed in [Known limitations](#known-limitations).
+> **Status:** live on Netlify with verified personal contract deployments on Midnight Preview and Preprod.
+
+## Live Working Website
+
+[Open the live Quiet Ledger website](https://quietledger2.netlify.app/)
+
+## Preprod
+
+### Deployed Contract Address
+
+`168f8534d266874dac44f04026920a57b93c7b1ec213008122b44d1e71197725`
+
+### Transaction Hash
+
+`e5d641c381bf9ce2eeadb0e2c517c5c16fa181dcdc74cf89755a7f6d665d93ab`
+
+## Preview
+
+### Deployed Contract Address
+
+`403c8a2b08360a6e45ae7095fd33afc15741e70912423d6c3479a392c38b2f07`
+
+### Transaction Hash
+
+`0255d7669186f98a50dd787d2f75f667bc9847c12c5872dfb9774a1fc6dd8278`
+
+## Live Website Screenshots
+
+### Worker-first landing page
+
+![Quiet Ledger live desktop landing page](docs/assets/quiet-ledger-live-home.png)
+
+### Wallet and protected-proof experience
+
+![Quiet Ledger live desktop proof experience](docs/assets/quiet-ledger-live-proof.png)
+
+## Mobile Responsive UI
+
+<p align="center">
+  <img src="docs/assets/quiet-ledger-mobile-home.jpg" width="31%" alt="Quiet Ledger mobile landing page" />
+  <img src="docs/assets/quiet-ledger-mobile-privacy.jpg" width="31%" alt="Quiet Ledger mobile privacy boundary" />
+  <img src="docs/assets/quiet-ledger-mobile-proof.jpg" width="31%" alt="Quiet Ledger mobile proof and receipt flow" />
+</p>
 
 ## Why Midnight
 
@@ -92,18 +134,10 @@ docs/        Proposal, architecture, privacy model and demo script
 .github/     Continuous verification workflow
 ```
 
-## Screenshots
-
-Add real screenshots from a configured local run to `docs/assets/` before submission; do not substitute illustrations or fabricated output. The proof flow’s empty receipt state is intentional until a wallet finalizes a real transaction.
-
-## Live demo
-
-Not deployed. After Netlify, Render, Neon, the deployed contract, and the appropriate wallet network are configured, add the verified production URL here.
-
 ## Known limitations
 
-- This repository cannot deploy a Midnight contract, create Neon branches, call Gemini, or publish a URL without the account credentials and wallet approvals owned by the deployer.
-- The Compact compiler must generate and commit the browser artifacts in `contracts/managed/` before a real circuit call can execute. No generated artifacts are fabricated in this repository.
+- Contract deployment and transaction submission require a compatible wallet, user approval, and sufficient network funds.
+- Netlify compiles the Compact source during its Linux build and publishes the generated browser artifacts; native Windows development still requires WSL or another Linux environment for local Compact compilation.
 - The product intentionally does not collect raw feedback. A future encrypted off-chain message channel would need a separate threat model and key-management review.
 - Session storage narrows browser retention but is not a hardware security boundary. Production credentials should ultimately be held and proved by the selected wallet / credential issuer integration.
 
