@@ -83,7 +83,7 @@ export default function App() {
     } catch (error) { setPhase("error"); setNotice(walletErrorMessage(error)); }
   };
   const askGemini = async () => { try { setPlan(await getPolicyPlan(requirement)); } catch (error) { setNotice(error instanceof Error ? error.message : "Assistant unavailable."); } };
-  return <main>
+  return <><a className="skip-link" href="#main-content">Skip to main content</a><main id="main-content" tabIndex={-1}>
     <aside className="rail"><a className="mark" href="#top">QUIET<br />LEDGER<span>®</span></a><p className="rail-label">A worker listening desk</p><nav aria-label="Sections"><a href="#requirement">01 / Window</a><a href="#privacy">02 / Boundary</a><a href="#proof">03 / Proof</a><a href="#ledger">04 / Ledger</a></nav><p className="rail-foot">Built for a slower, safer answer.</p></aside>
     <section className="page" id="top">
       <header className="topline"><span>Worker listening / April 2026</span><div><span className={`status-dot ${serviceOnline === false ? "offline" : ""}`} /> {serviceOnline === null ? "Checking service" : serviceOnline ? "Service ready" : "Service unavailable"} · Network: {network}</div><button className="text-button" onClick={() => wallet ? disconnect() : connect()}>{wallet ? "Disconnect" : "Connect wallet"}</button></header>
@@ -99,5 +99,5 @@ export default function App() {
       <section className="assistant-panel"><div><p className="eyebrow">Public-policy assistant</p><h2>What exactly am I proving?</h2><p>Gemini sees the public requirement only. It does not receive local credentials, wallet data, private notes, or proof inputs.</p><button className="secondary" onClick={askGemini}>Explain this boundary</button></div>{plan ? <div className="plan"><b>{plan.headline}</b><p>{plan.explanation}</p>{plan.disclosures.map((d) => <small key={d}>— {d}</small>)}</div> : <div className="plan ghost">A concise explanation will appear here, using only the public window policy.</div>}</section>
       <footer>Quiet Ledger is a privacy-preserving workplace listening prototype. <a href="/guide">How it works</a> · <a href="/privacy">Privacy notes</a> · <a href="https://docs.midnight.network/" target="_blank">How Midnight protects proofs ↗</a></footer>
     </section>
-  </main>;
+  </main></>;
 }
