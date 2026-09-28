@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 # Make the backend package resolvable without relying on the caller's cwd.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.models import Base
+from app.settings import normalize_async_database_url
 
 config = context.config
 target_metadata = Base.metadata
@@ -19,7 +20,7 @@ target_metadata = Base.metadata
 # is intentionally not read here: PgBouncer transaction pooling is not suitable
 # for Alembic's session-level migration work.
 if database_url := os.getenv("DATABASE_URL_UNPOOLED"):
-    config.set_main_option("sqlalchemy.url", database_url)
+    config.set_main_option("sqlalchemy.url", normalize_async_database_url(database_url) or database_url)
 
 
 def run_migrations_offline() -> None:
