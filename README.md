@@ -80,7 +80,7 @@ uv run --directory backend pytest
 
 Netlify builds the Vite application from `netlify.toml` and publishes `dist`. Set `VITE_API_BASE_URL` to the public Render service origin before building. The SPA rewrite keeps `/guide` and `/privacy` available on direct navigation.
 
-Render builds `Dockerfile.backend` through `render.yaml`. The container runs Alembic before starting FastAPI, serves on Render's assigned port, and verifies `/health`. Configure the pooled Neon URL as `DATABASE_URL`, the direct Neon URL as `DATABASE_URL_UNPOOLED`, and the exact Netlify origin as `CORS_ORIGINS`. Production refuses SQLite and wildcard CORS. See the complete [deployment guide](docs/DEPLOYMENT.md).
+Render builds `Dockerfile.backend` on the free web-service plan declared in `render.yaml`. The container runs Alembic before starting FastAPI, serves on Render's assigned port, and verifies `/health`. Configure the pooled Neon URL as `DATABASE_URL`, the direct Neon URL as `DATABASE_URL_UNPOOLED`, and the exact Netlify origin as `CORS_ORIGINS`. Production refuses SQLite and wildcard CORS. See the complete [deployment guide](docs/DEPLOYMENT.md).
 
 ## Repository structure
 

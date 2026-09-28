@@ -8,11 +8,11 @@ Quiet Ledger deploys as two services: Netlify serves the Vite frontend, and Rend
 2. Copy the production branch's pooled URL into Render as `DATABASE_URL`.
 3. Copy the production branch's direct, non-pooled URL into Render as `DATABASE_URL_UNPOOLED`.
 
-The Render service uses the pooled connection for normal traffic. The container runs Alembic with the direct connection before starting FastAPI, so the health check cannot pass until the schema is ready. This startup sequence works on both free and paid single-instance Render services; Render's separate pre-deploy command is a paid feature.
+The Render service uses the pooled connection for normal traffic. The container runs Alembic with the direct connection before starting FastAPI, so the health check cannot pass until the schema is ready. This startup sequence works on the free single-instance service without Render's paid-only pre-deploy command.
 
 ## 2. Deploy the API on Render
 
-Create a Blueprint from the repository's `render.yaml`. Before the first deploy, provide these secret values in Render:
+Create a Blueprint from the repository's `render.yaml`. The Blueprint explicitly selects Render's free web-service plan. Before the first deploy, provide these secret values in Render:
 
 - `DATABASE_URL`: pooled Neon production URL.
 - `DATABASE_URL_UNPOOLED`: direct Neon production URL.
