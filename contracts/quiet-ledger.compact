@@ -33,9 +33,11 @@ pure circuit nullifierFor(window: Uint<64>, secret: Bytes<32>): Bytes<32> {
 // The witness commitment proves the worker belongs to the published eligibility set.
 export circuit submitSignal(window: Uint<64>): [] {
   assert(window == activeWindow, "Listening window is not active");
-  assert(eligibleCommitments.member(credentialFor(nullifierSecret())), "Credential is not eligible");
+  // DELIBERATE DISCLOSURE: membership operates on the same one-way commitment
+  // published by this personal contract's constructor, never on the secret.
+  assert(eligibleCommitments.member(disclose(credentialFor(nullifierSecret()))), "Credential is not eligible");
   const nullifier = nullifierFor(window, nullifierSecret());
-  assert(!usedNullifiers.member(nullifier), "A signal already exists for this window");
+  assert(!usedNullifiers.member(disclose(nullifier)), "A signal already exists for this window");
   // DELIBERATE DISCLOSURE: only a window-scoped one-way nullifier is stored publicly.
   // It prevents replay without revealing the credential, secret, worker, or response.
   usedNullifiers.insert(disclose(nullifier));
